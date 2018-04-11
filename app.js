@@ -1,68 +1,107 @@
 gadget.ready(function() {		
 
-	// console.log("Gadget Log: ", gadget);
+	getData();
+	getTemplate();
 
 });
 
-function augmentUserList(userList) {
-	userList.forEach(function(user){
-		user.email = lookupEmailByName(user.username);
-		console.log(user.email);
+function buildGroupTable(records) {
+	
+	var obj = {};
+	
+	records.forEach(function(row) {
+		var groups = row.u_groupmembership.split(/\s*,\s*/);
+		groups.forEach(function(g) {
+			obj[g] = obj[g] || [];
+			obj[g].push(row);
+		});
 	});
+	
+	return obj;
 }
 
-function lookupEmailByName(username) {
+function getData() {
 	const apiHost = gadget.apihost;
 	const callData = {
 		site: gadget.site,
 		authorization_token: gadget.token,
-		user: username
+		all: "true",
+		report: "users",
+		u_username: "on",
+		u_lastname: "on",
+		u_firstname: "on",
+		u_email: "on",
+		u_groupmembership: "on"
 	};
-    //var email = '1';
 	
-	return $.ajax({
-		method: 'GET',
-		url: apiHost + '/users/view',
-		data: callData
-	})
-		.done(function (data) {
-		//console.log(data);
-		return data.email || '2';
-	})
-		.fail(function (err) {
-		console.log(err);
-	});
-	
-	//return email+"cat";
-}
-
-function lookupGroupByName(textFromInput) {
-	const apiHost = gadget.apihost;
-	const callData = {
-		site: gadget.site,
-		authorization_token: gadget.token,
-		group: textFromInput
-	};
-
-	console.log("callData ",callData);
+	//console.log("callData ",callData);
 
 	$.ajax({
 		method: 'GET',
-		url: apiHost + '/groups/view',
+		url: apiHost + '/reports',
 		data: callData
 	})
 		.done(function (data) {
-		augmentUserList(data.members);
-		console.log("Augmented", data.members);
+		
+		//console.log("Big data", data);
+		groupTable = buildGroupTable(data.records);
+		//console.log(groupTable);
+
 	})
 		.fail(function (err) {
 		console.log(err);
 	});
+}
+
+
+function getTemplate() {
+	const apiHost = gadget.apihost;
+	
+	//console.log("callData ",callData);
+
+	$.ajax({
+		method: 'GET',
+		url: 'message.txt'
+	})
+	.done(function (data) {
+		
+		template = data;
+
+	})
+		.fail(function (err) {
+		console.log(err);
+	});
+}
+
+var template = '';
+var groupTable;
+
+function getMessage(group) {
+	
+	var msg, userlist;
+	
+	if (!groupTable[group]) {
+		return "Group '" + group + "' not found.";
+	}
+	userlist = [];
+	
+	groupTable[group].forEach(function(u) {
+		userlist.push("   " + u.u_firstname + " " + u.u_lastname + '(' + u.u_email + ')');
+	})
+		
+	msg = template.replace(/{{userlist}}/, userlist.join("<br />")).replace(/\n/, "<br />");
+	return msg;
 }
 
 $('#glg-button-lookup').on('click', function(evt) {
 
 	let textFromInput = $('#glg-input-groupname').val();
-	lookupGroupByName(textFromInput);
+	
+	console.log(groupTable);
+	console.log(template);
+	
+	var msg = getMessage(textFromInput);
+	console.log(msg);
+    $('#glg-message-provision').html(msg);
 
 });
