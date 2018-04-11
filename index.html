@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Group Member Lookup</title>
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- Group Member Lookup CSS -->
+		<link rel="stylesheet" href="app.css"/>
+	</head>
+
+
+	<body>
+		<div class="container">
+			<div class="row">
+				<label>Group Name<br/>
+					<input type="text" id="glg-input-groupname" class="glg__input" />
+				</label>
+				<button id="glg-button-lookup" class="btn">Lookup</button>
+			</div>
+			<div class="row">
+				<button id="glg-button-submit" class="btn btn-primary">Send Message</button>
+			</div>			
+			<div class="row">
+				<label>User Provisioning Message</label>
+				<div id="glg-message-provision" class="glg__textarea"></div>				
+			</div>
+
+		</div>
+
+
+		<div style="display:none;"><!-- ouc:ob --><a href="http://a.cms.omniupdate.com/10?skin=outc18&amp;account=bsparks&amp;site=outc18&amp;action=de&amp;path=/custom-gadgets/group-member-lookup/index.html">Last Updated 3/28/18</a><!-- /ouc:ob --></div>
+		<!-- jQuery JS -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<!-- Bootstrap JS -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>		
+		<!-- OU Gadget Library JS -->
+		<script src="../lib/gadgetlib.js"></script>
+		<!-- Group Member Lookup JS -->
+		<script src="app.js"></script>		
+	</body>
+</html>

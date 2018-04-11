@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+	<entry key="title">Group Member Lookup</entry>
+	<entry key="description">Look up members of a group and notify them of group membership changes</entry>
+	<entry key="types" private="true">dashboard</entry>
+	<entry key="columns" private="true">3</entry>
+</config>

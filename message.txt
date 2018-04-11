@@ -1,0 +1,10 @@
+Welcome to Gallena University’s (Go Beavers!) implementation of OU Campus. We have created an account for you with access to the your site.<br/>
+
+<strong>Site Access</strong><br/>
+The following users have access to the site:<br/>
+
+{{userlist}}
+
+<br/>
+<strong>Getting Help</strong><br/>
+Call Shahab Lashkari at (555) 555-5555.
