@@ -1,3 +1,5 @@
+'use strict';
+
 gadget.ready(function() {		
 
 	getData();
@@ -23,7 +25,6 @@ function buildGroupTable(records) {
 function getData() {
 	const apiHost = gadget.apihost;
 	const callData = {
-		site: gadget.site,
 		authorization_token: gadget.token,
 		all: "true",
 		report: "users",
@@ -73,6 +74,7 @@ function getTemplate() {
 	});
 }
 
+var group;
 var template = '';
 var groupTable;
 
@@ -80,28 +82,76 @@ function getMessage(group) {
 	
 	var msg, userlist;
 	
+	if (!groupTable) {
+		return "Group information not loaded.";
+	}
+	
 	if (!groupTable[group]) {
 		return "Group '" + group + "' not found.";
 	}
 	userlist = [];
 	
 	groupTable[group].forEach(function(u) {
-		userlist.push("   " + u.u_firstname + " " + u.u_lastname + '(' + u.u_email + ')');
+		userlist.push('<li>' + u.u_firstname + " " + u.u_lastname + ' (' + u.u_email + ')</li>');
 	})
 		
-	msg = template.replace(/{{userlist}}/, userlist.join("<br />")).replace(/\n/, "<br />");
+	msg = template.replace(/{{userlist}}/, '<ul>' + userlist.join("") + '</ul>').replace(/\n/, "<br />");
 	return msg;
 }
 
+function sendMessage(group, msg) {
+	const apiHost = gadget.apihost;
+	const callData = {
+		authorization_token: gadget.token,
+		subject: "Your new site",
+		text: msg,
+		send_email: true,
+		group: group,
+		site: gadget.site,
+		account: gadget.account
+	};
+	
+	console.log('Sending', group, msg);
+	
+	$.ajax({
+		method: 'POST',
+		url: apiHost + '/messages/new',
+		data: callData
+	})
+		.done(function (data) {
+		
+		$('#glg-message-provision').html("Message sent.");
+
+	})
+		.fail(function (err) {
+		console.log(err);
+	});
+
+}
+
+
 $('#glg-button-lookup').on('click', function(evt) {
 
-	let textFromInput = $('#glg-input-groupname').val();
+	group = $('#glg-input-groupname').val();
 	
-	console.log(groupTable);
-	console.log(template);
+	//console.log(groupTable);
+	//console.log(template);
 	
-	var msg = getMessage(textFromInput);
-	console.log(msg);
+	var msg = getMessage(group);
+	//console.log(msg);
     $('#glg-message-provision').html(msg);
+
+});
+
+$('#glg-button-submit').on('click', function(evt) {
+
+	console.log("Sending", evt);
+	let msg = $('#glg-message-provision').html();
+	
+	if (!msg) {
+		return;   // Nothing to send
+	}
+	
+	sendMessage(group, msg);
 
 });
